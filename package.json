@@ -1,0 +1,30 @@
+{
+  "name": "minesquire",
+  "version": "0.0.1",
+  "description": "Create Minecraft bots for version 1.5.2",
+  "main": "./dist/index.js",
+  "scripts": {
+    "clear": "rimraf dist",
+    "build": "npm run clear && tsc",
+    "dev": "ts-node-dev  --watch . --respawn --project tsconfig.json --exit-child --tree-kill src/index.ts"
+  },
+  "keywords": ["minecraft", "bot", "1.5.2"],
+  "author": "Marcos André",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Useems/minesquire.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "nbt": "^0.8.1",
+    "rimraf": "^3.0.2",
+    "tiny-typed-emitter": "^2.0.3",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.5"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.26",
+    "@types/vec3": "0.0.29",
+    "ts-node-dev": "^1.1.1"
+  }
+}
