@@ -15,6 +15,7 @@
     "allowUnreachableCode": true,
     "allowJs": true,
     "esModuleInterop": true,
+    "noImplicitAny": true,
     "skipLibCheck": true
   },
   "include": ["src", "src/**/*.json"],

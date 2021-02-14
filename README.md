@@ -4,7 +4,7 @@ Create Minecraft bots for version 1.5.2
 
 ## Installation
 
-Use the package manager [npm](https://www.npmjs.com) to install minesquire.
+Use the package manager [npm](https://www.npmjs.com/package/minesquire) to install minesquire.
 
 ```bash
 npm install minesquire

@@ -28,7 +28,7 @@ export class Encrypt {
         };
     }
 
-    private generatePublicKey(publicKey) : string {
+    private generatePublicKey(publicKey: string) : string {
         let pem = "-----BEGIN PUBLIC KEY-----\n";
         let maxLineLength = 65;
 

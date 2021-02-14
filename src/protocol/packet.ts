@@ -1,6 +1,6 @@
-import { Vec3 } from "vec3";
 import ByteArray from "./lib/bytearray";
-import * as protocols from "./protocol.json";
+
+const protocols: {[key: string]: any} = require("./protocol.json");
 
 export interface PacketOptions {
     maxAcumulativeErrors?: number
@@ -21,7 +21,7 @@ export class Packet {
             this.maxAcumulativeErrors = options.maxAcumulativeErrors;
     }
 
-    create(packetId: number, data: object) {
+    create(packetId: number, data: {[key: string]: any}) {
         if (packetId in protocols) {
             let protocol = protocols[packetId];
             let buffer = new ByteArray().writeUByte(packetId);
@@ -44,7 +44,7 @@ export class Packet {
     parse(buffer: Buffer) : PacketData {
         let packet =  new ByteArray(buffer);
         let packetId = packet.readUByte();
-        let result = {};
+        let result: {[key: string]: ByteArray} = {};
 
         if (packetId in protocols) {
             let protocol = protocols[packetId];

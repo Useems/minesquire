@@ -35,11 +35,11 @@ export class Client extends EventEmitter {
         this.setSocket();
     }
 
-    async getAddresses(host, port) : Promise<[string, number]> {
+    async getAddresses(host: string, port: number) : Promise<[string, number]> {
         return port === 25565 ? await new Promise((resolve, _reject) => dns.resolveSrv(`_minecraft._tcp.${host}`, (_err, addresses) => resolve(addresses ? [addresses[0].name, addresses[0].port] : [host, port]))) : [host, port];
     }
 
-    async parseEncryptionKeyRequest(data) {
+    async parseEncryptionKeyRequest(data: {publicKey: Buffer, verifyToken: Buffer}) {
         let {sharedSecret, verifyToken} = await this._encrypt.set(data.publicKey, data.verifyToken);
 
         this.write("encryption_key_response", {sharedSecret, verifyToken});
@@ -97,7 +97,7 @@ export class Client extends EventEmitter {
                     if (packetName === "keep_alive") {
                         this.write("keep_alive", {keepAliveId: packet.data.keepAliveId});
                     } else if (packetName === "encryption_key_request") {
-                        this.parseEncryptionKeyRequest(packet.data);
+                        this.parseEncryptionKeyRequest(<{ publicKey: Buffer, verifyToken: Buffer }>packet.data);
                     } else if (packetName === "encryption_key_response") {
                         this._encryptionEnabled = true;
 

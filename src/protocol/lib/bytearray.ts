@@ -72,20 +72,20 @@ export default class ByteArray {
     }
 
     get(method: string = "get", type: string = "int") {
-        return this[method + capitalize(type)].bind(this);
+        return Object.getPrototypeOf(this)[method + capitalize(type)].bind(this);
     }
 
     get buffer() : Buffer {
         return this._buffer;
     }
 
-    write(value: any) : ByteArray {
+    write(value: (string|Buffer)) : ByteArray {
         this._buffer = Buffer.concat([this._buffer, Buffer.from(value)]);
 
         return this;
     }
 
-    read(len) : Buffer {
+    read(len: number) : Buffer {
         len = len >= 0 ? len : this._buffer.length;
 
         if (len > this._buffer.length) return null;
@@ -96,7 +96,7 @@ export default class ByteArray {
         return value;
     }
 
-    writeByte(value) : ByteArray {
+    writeByte(value: number) : ByteArray {
         let buffer = Buffer.alloc(1);
         buffer.writeInt8(value);
 
@@ -112,7 +112,7 @@ export default class ByteArray {
         return value;
     }
 
-    writeUByte(value) : ByteArray {
+    writeUByte(value: number) : ByteArray {
         let buffer = Buffer.alloc(1);
         buffer.writeUInt8(value);
 
@@ -128,7 +128,7 @@ export default class ByteArray {
         return value;
     }
 
-    writeShort(value) : ByteArray {
+    writeShort(value: number) : ByteArray {
         let buffer = Buffer.alloc(2);
         buffer.writeInt16BE(value);
 
@@ -144,7 +144,7 @@ export default class ByteArray {
         return value;
     }
 
-    writeUShort(value) : ByteArray {
+    writeUShort(value: number) : ByteArray {
         let buffer = Buffer.alloc(2);
         buffer.writeUInt16BE(value);
 
@@ -160,7 +160,7 @@ export default class ByteArray {
         return value;
     }
 
-    writeInt(value) : ByteArray {
+    writeInt(value: number) : ByteArray {
         let buffer = Buffer.alloc(4);
         buffer.writeInt32BE(value);
 
@@ -176,7 +176,7 @@ export default class ByteArray {
         return value;
     }
 
-    writeUInt(value) {
+    writeUInt(value: number) {
         let buffer = Buffer.alloc(4);
         buffer.writeUInt32BE(value);
 
@@ -192,7 +192,7 @@ export default class ByteArray {
         return value;
     }
 
-    writeLong(value) : ByteArray {
+    writeLong(value: number) : ByteArray {
         let buffer = Buffer.alloc(4);
         buffer.writeUInt32BE(value >> 8, 0);
         buffer.writeUInt32BE(value & 0x00ff, 4);
@@ -209,7 +209,7 @@ export default class ByteArray {
         return value;
     }
 
-    writeDouble(value) : ByteArray {
+    writeDouble(value: number) : ByteArray {
         let buffer = Buffer.alloc(8);
         buffer.writeDoubleBE(value);
         this._buffer = Buffer.concat([this._buffer, buffer]);
@@ -224,7 +224,7 @@ export default class ByteArray {
         return value;
     }
 
-    writeFloat(value) : ByteArray {
+    writeFloat(value: number) : ByteArray {
         let buffer = Buffer.alloc(4);
         buffer.writeFloatBE(value);
         this._buffer = Buffer.concat([this._buffer, buffer]);
@@ -239,7 +239,7 @@ export default class ByteArray {
         return value;
     }
 
-    writeBoolean(value) : ByteArray {
+    writeBoolean(value: boolean) : ByteArray {
         return this.writeByte(value ? 1 : 0);
     }
 
@@ -247,11 +247,11 @@ export default class ByteArray {
         return this.readByte() !== 0;
     }
 
-    writeString(value) : ByteArray {
+    writeString(value: string) : ByteArray {
         this.writeShort(value.length);
 
-        for (let i in value)
-            this.writeUShort(value.charCodeAt(i));
+        for (let i in Array.from(value))
+            this.writeUShort(value.charCodeAt(parseInt(i)));
 
         return this;
     }
@@ -373,7 +373,7 @@ export default class ByteArray {
     }
 
     readEntityMetadata() : EntityMetadata {
-        let metadata = {};
+        let metadata: {[key: string]: any} = {};
 
         while (true) {
             let item = this.readUByte();
@@ -576,7 +576,9 @@ export default class ByteArray {
             result.players = this.readStringArray();
         }
 
-        for (let i in result) if (result[i] === null) return null;
+        if (Object.entries(result).every(item => {
+            if (item[1] === null) return false;
+        }) === null) return null;
 
         return result;
     }
@@ -592,7 +594,9 @@ export default class ByteArray {
             result.value = this.readInt();
         }
 
-        for (let i in result) if (result[i] === null) return null;
+        if (Object.entries(result).every(item => {
+            if (item[1] === null) return false;
+        }) === null) return null;
 
         return result;
     }
