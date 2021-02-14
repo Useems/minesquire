@@ -36,8 +36,8 @@ export class Client extends EventEmitter {
     }
 
     async getAddresses(host, port) : Promise<[string, number]> {
-		return port === 25565 ? await new Promise((resolve, _reject) => dns.resolveSrv(`_minecraft._tcp.${host}`, (_err, addresses) => resolve(addresses ? [addresses[0].name, addresses[0].port] : [host, port]))) : [host, port];
-	}
+        return port === 25565 ? await new Promise((resolve, _reject) => dns.resolveSrv(`_minecraft._tcp.${host}`, (_err, addresses) => resolve(addresses ? [addresses[0].name, addresses[0].port] : [host, port]))) : [host, port];
+    }
 
     async parseEncryptionKeyRequest(data) {
         let {sharedSecret, verifyToken} = await this._encrypt.set(data.publicKey, data.verifyToken);
@@ -53,12 +53,12 @@ export class Client extends EventEmitter {
         this._socket.on("connect", () => {
             this.connected = true;
 
-			this.write("handshake", {
-				protocolVersion: 61,
-				username: this.username,
-				serverHost: host,
-				serverPort: port
-			});
+            this.write("handshake", {
+                protocolVersion: 61,
+                username: this.username,
+                serverHost: host,
+                serverPort: port
+            });
 
             this.emit("connect");
         });
@@ -73,8 +73,8 @@ export class Client extends EventEmitter {
         });
 
         this._socket.on("data", (data: Buffer) => {
-			if (this._encryptionEnabled)
-				data = this._encrypt.decipher.update(data);
+            if (this._encryptionEnabled)
+                data = this._encrypt.decipher.update(data);
 
             let buffer = Buffer.concat([this._packetQueue, data]);
 
@@ -88,9 +88,9 @@ export class Client extends EventEmitter {
                     return;
                 }
 
-				if (!packet) {
-					break;
-				} else {
+                if (!packet) {
+                    break;
+                } else {
                     buffer = packet.buffer;
                     let packetName = this._definitions.getName(packet.id);
 

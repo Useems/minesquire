@@ -10,9 +10,9 @@ export class Encrypt {
     decipher: crypto.Decipher;
 
     async set(publicKey: Buffer, verifyToken: Buffer) : Promise<EncryptSet> {
-        let sharedSecret: Buffer = await new Promise((resolve, reject) => {
-			crypto.randomBytes(16, (_err, buf) => resolve(buf));
-		});
+        let sharedSecret: Buffer = await new Promise((resolve, _reject) => {
+            crypto.randomBytes(16, (_err, buf) => resolve(buf));
+        });
 
         let pemPublicKey = this.generatePublicKey(publicKey.toString("base64"));
 
@@ -23,22 +23,22 @@ export class Encrypt {
         this.decipher = crypto.createDecipheriv("aes-128-cfb8", sharedSecret, sharedSecret);
 
         return {
-			sharedSecret: encryptedSharedSecretBuffer,
-			verifyToken: encryptedVerifyTokenBuffer
+            sharedSecret: encryptedSharedSecretBuffer,
+            verifyToken: encryptedVerifyTokenBuffer
         };
     }
 
     private generatePublicKey(publicKey) : string {
-		let pem = "-----BEGIN PUBLIC KEY-----\n";
-		let maxLineLength = 65;
-	
-		while (publicKey.length > 0) {
-			pem += publicKey.substring(0, maxLineLength) + '\n';
-			publicKey = publicKey.substring(maxLineLength);
-		}
+        let pem = "-----BEGIN PUBLIC KEY-----\n";
+        let maxLineLength = 65;
 
-		pem += "-----END PUBLIC KEY-----\n";
+        while (publicKey.length > 0) {
+            pem += publicKey.substring(0, maxLineLength) + '\n';
+            publicKey = publicKey.substring(maxLineLength);
+        }
 
-		return pem;
-	}
+        pem += "-----END PUBLIC KEY-----\n";
+
+        return pem;
+    }
 }
